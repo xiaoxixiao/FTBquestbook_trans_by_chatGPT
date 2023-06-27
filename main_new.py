@@ -1,4 +1,5 @@
 import ast
+import os
 
 import snbtlib
 
@@ -18,6 +19,11 @@ def main():
     files = Snbt.get_all_snbt_files('input_here')
     log.info('已获取所有 .snbt 文件: ' + str(files))
 
+    # 如果文件夹为空，退出程序
+    if len(files) == 0:
+        log.warn('文件夹为空，程序退出')
+        exit(0)
+
     # 遍历files，读取文件内容
     for item in files:
         # 获取文件名
@@ -28,9 +34,11 @@ def main():
             original_content = f.read()
             # snbt内容转换为json
             json_context = snbtlib.loads(original_content, format=True)
-            # 保存json
-            with open("output/snbt_json/" + original_filename + '.json', 'w', encoding='utf-8') as f:
-                f.write(json_context)
+            # 保存json，如果文件夹不存在，创建文件夹
+            if not os.path.exists('output/snbt_json'):
+                os.makedirs('output/snbt_json')
+            with open("output/snbt_json/" + original_filename + '.json', 'w', encoding='utf-8') as f_i:
+                f_i.write(json_context)
 
     # 遍历output/snbt_json文件夹，读取 .json 文件内容
     files_output = Snbt.get_all_json_files('output/snbt_json')
@@ -41,11 +49,13 @@ def main():
             original_content = f.read()
             # str内容转换为dict
             original_content_dict = json.loads(original_content)  # original_content_dict是原始文本字典
-            # 递归查找 所有 title，subti，description 键值对
+            # 递归查找 所有 title，subtitle，description 键值对
             result = Find.find_keys_in_dict(original_content_dict, ['title', 'subtitle', 'description'])
             result = json.dumps(result, ensure_ascii=False, indent=4)
             log.info('已获取所有: ' + str(result) + "\n列表元素数量为：" + str(len(json.loads(result))))
-            # 保存提取结果
+            # 保存提取结果，如果文件夹不存在，创建文件夹
+            if not os.path.exists('output/extract'):
+                os.makedirs('output/extract')
             with open("output/extract/" + original_filename + "_extract" + '.json', 'w', encoding='utf-8') as f__:
                 f__.write(result)
 
@@ -67,7 +77,9 @@ def main():
                 log.info(
                     "当前大列表为:" + str(result_translated) + '\n\n已翻译：' + str(result) + f'\n{str(type(result))}')
 
-            # 翻译完成 保存翻译结果
+            # 翻译完成 保存翻译结果，如果文件夹不存在，创建文件夹
+            if not os.path.exists('output/translate'):
+                os.makedirs('output/translate')
             with open("output/translate/" + original_filename + '.json', 'w', encoding='utf-8') as f_:
                 f_.write(json.dumps(result_translated, ensure_ascii=False, indent=4))
 
@@ -122,7 +134,9 @@ def main():
             # 将dict转为snbt
             new_snbt = snbtlib.dumps(new_json)
             log.info(f"已转换为snbt，类型为：{type(new_snbt)}")
-            # 保存snbt
+            # 保存snbt，如果文件夹不存在，创建文件夹
+            if not os.path.exists('output'):
+                os.makedirs('output')
             with open("output/" + original_filename + '.snbt', 'w', encoding='utf-8') as f_f:
                 f_f.write(new_snbt)
             log.info(f"已保存snbt，文件名为：{original_filename}.snbt")
