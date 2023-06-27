@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/translate.iml" filepath="$PROJECT_DIR$/.idea/translate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FTB_trans_by_chatgpt.iml" filepath="$PROJECT_DIR$/.idea/FTB_trans_by_chatgpt.iml" />
     </modules>
   </component>
 </project>
